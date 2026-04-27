@@ -1,28 +1,27 @@
 import pyodbc
 
-class ConexionDB:
+class ConexionBD:
     def __init__(self):
-        # Update these with your actual SQL Server connection details
-        self.server = 'localhost'
+        # Datos exactos del servidor SQL
+        self.server = r'ISAIAS\ISAIAS'
         self.database = 'SuperMaximiniDB'
-        self.username = 'sa'
-        self.password = 'your_password'
+        self.conexion = None
 
-        # Connection string
-        self.conn_str = (
-            f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-            f"SERVER={self.server};"
-            f"DATABASE={self.database};"
-            f"UID={self.username};"
-            f"PWD={self.password};"
-            # If using Windows Authentication instead of SQL Server Authentication:
-            # f"Trusted_Connection=yes;"
-        )
-
-    def get_connection(self):
+    def conectar(self):
         try:
-            conn = pyodbc.connect(self.conn_str)
-            return conn
-        except pyodbc.Error as e:
-            print(f"Database connection error: {e}")
+            self.conexion = pyodbc.connect(
+                'DRIVER={ODBC Driver 17 for SQL Server};'
+                f'SERVER={self.server};'
+                f'DATABASE={self.database};'
+                'Trusted_Connection=yes;' # Se usa 'yes' porque es Autenticación de Windows
+            )
+            print("Conexión a SQL Server exitosa.")
+            return self.conexion
+        except Exception as e:
+            print(f"Error de conexión: {e}")
             return None
+
+    def cerrar(self):
+        if self.conexion:
+            self.conexion.close()
+            print("Conexión cerrada.")
