@@ -29,5 +29,19 @@ services:
     command: >
       bash -c '/opt/mssql-tools18/bin/sqlcmd -S db -U sa -P "YourStrong!Passw0rd" -C -d master -i /init.sql && echo "Database initialized successfully" || echo "Database initialization failed"'
 
+  app:
+    build: .
+    container_name: supermaximini-app
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      - USE_DOCKER_DB=True
+      - DB_SERVER=db,1433
+      - DB_NAME=SuperMaximiniDB
+      - DB_USER=sa
+      - DB_PASSWORD=YourStrong!Passw0rd
+      - DISPLAY=host.docker.internal:0.0
+
 volumes:
   sqlserver_data:
